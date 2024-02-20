@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,11 +29,43 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bejelentkezés"
+                    android:text="Regisztráció"
                     android:textSize="24sp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
                     android:textStyle="bold"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextFullName"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Teljes név"
+                        android:inputType="text"
+                        android:textColor="@color/black"
+                        android:padding="10dp"
+                        android:layout_marginBottom="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTextUsername"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Felhasználónév"
+                        android:inputType="text"
+                        android:textColor="@color/black"
+                        android:padding="10dp"
+                        android:layout_marginBottom="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -55,19 +87,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/editTextPassword"
-                    android:layout_marginBottom="15sp"
                     app:errorEnabled="true"
                     app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Jelszó megadása"
-                        android:textSize="20sp"
+                        android:hint="Jelszó"
                         android:inputType="textPassword"
-                        android:backgroundTint="@color/black"
+                        android:textColor="@color/black"
                         android:padding="10dp"
-                        android:layout_marginBottom="20sp"/>
+                        android:layout_marginBottom="5sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -77,10 +107,10 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bejelentkezés"
-            android:id="@+id/buttonSubmit"
-            android:cornerRadius="10dp"/>
-
+            android:text="Regisztráció"
+            android:id="@+id/buttonRegister"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
     </LinearLayout>
 
 </ScrollView>
