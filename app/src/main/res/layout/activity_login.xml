@@ -78,8 +78,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bejelentkezés"
-            android:id="@+id/buttonSubmit"
-            android:cornerRadius="10dp"/>
+            android:id="@+id/buttonLogin" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mégse"
+            android:id="@+id/buttonBack" />
 
     </LinearLayout>
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NewErrorActivity">
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Új hiba bejelentése"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:paddingTop="40dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewErrorName"
+                android:text="Hiba megnevezése"
+                android:textSize="20sp"
+                android:paddingTop="25px"
+                android:paddingLeft="25px"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextErrorTitle"
+                android:hint="Pl: Kidőlt fa, kátyú, stb."
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewErrorDescription"
+                android:text="Hiba leírása"
+                android:textSize="20sp"
+                android:paddingTop="25px"
+                android:paddingLeft="25px"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextErrorDescription"
+                android:hint="Pl: A kátyú mérete, a kidőlt fa helye, stb."
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewErrorLocation"
+                android:text="Hiba helye"
+                android:textSize="20sp"
+                android:paddingTop="25px"
+                android:paddingLeft="25px"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextErrorLocation"
+                android:hint="Pl: Budapest, 10. kerület, stb."
+                android:inputType="text"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewErrorPicture"
+                android:text="Kép a hibáról"
+                android:textSize="20sp"
+                android:paddingTop="25px"
+                android:paddingLeft="25px"
+                android:paddingBottom="5px"/>
+
+                //TODO: Hiba kép feltöltése
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonErrorPicture"
+                android:text="Kép kiválasztása"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonErrorSubmit"
+                android:text="Hiba bejelentése"
+                android:layout_marginTop="25px"
+                android:layout_marginBottom="25px"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonErrorCancel"
+                android:text="Mégse"
+                android:layout_marginBottom="25px"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+</LinearLayout>

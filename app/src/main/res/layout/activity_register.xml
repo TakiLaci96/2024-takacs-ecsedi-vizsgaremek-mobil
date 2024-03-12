@@ -54,22 +54,6 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextUsername"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Felhasználónév"
-                        android:inputType="text"
-                        android:textColor="@color/black"
-                        android:padding="10dp"
-                        android:layout_marginBottom="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/editTextEmail"
                     app:errorEnabled="true">
 
@@ -109,8 +93,16 @@
             android:layout_height="wrap_content"
             android:text="Regisztráció"
             android:id="@+id/buttonRegister"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mégse"
+            android:id="@+id/buttonBack" />
     </LinearLayout>
 
 </ScrollView>
+
+
+
