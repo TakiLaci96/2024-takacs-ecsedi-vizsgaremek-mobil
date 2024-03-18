@@ -6,9 +6,14 @@ public class User {
     private String password;
     //plusz egyéb adattagok ha szükséges
 
-
+    // Regisztrációhoz szükséges adatok
     public User(String name, String email, String password) {
         this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+    // Bejelentkezéshez szükséges adatok
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
