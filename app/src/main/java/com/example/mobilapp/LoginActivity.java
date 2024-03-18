@@ -3,14 +3,22 @@ package com.example.mobilapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity {
 
     private Button buttonLogin;
     private Button buttonBack;
+    private String requestUrl = "http://10.0.2.2:8000/api/login";
 
 
     @Override
@@ -44,4 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonBack = findViewById(R.id.buttonBack);
     }
+
+
+
+
 }

@@ -20,10 +20,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button buttonRegister;
     private Button buttonBack;
-    private TextInputLayout editTextFullName;
+    private TextInputLayout editTextName;
     private TextInputLayout editTextEmail;
     private TextInputLayout editTextPassword;
-    private String requestUrl = "http://10.0.2.2:8000/api/users";   //még nem létezik ez az URL
+    private String requestUrl = "http://10.0.2.2:8000/api/register";
 
 
     @Override
@@ -35,21 +35,43 @@ public class RegisterActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fullName = editTextFullName.getEditText().getText().toString().trim();
+                String name = editTextName.getEditText().getText().toString().trim();
                 String email = editTextEmail.getEditText().getText().toString().trim();
                 String password = editTextPassword.getEditText().getText().toString().trim();
 
-                if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(RegisterActivity.this,
                             "Minden mező kitöltése kötelező", Toast.LENGTH_SHORT).show();
-                    editTextFullName.setError("Kötelező mező");
+                    editTextName.setError("Kötelező mező");
+                    editTextEmail.setError("Kötelező mező");
+                    editTextPassword.setError("Kötelező mező");
                     return;
                 }
 
-                User user = new User(fullName, email, password);
+                // További ellenőrzések
+
+                if (name.length() < 5 || name.length() > 50) {
+                    editTextName.setError("A névnek 5 és 50 karakter között kell lennie");
+                    return;
+                } else if (email.length() < 5 || email.length() > 100) {
+                    editTextEmail.setError("Az email címnek 5 és 100 karakter között kell lennie");
+                    return;
+                } else if (!email.contains("@") || !email.contains(".")) {
+                    editTextEmail.setError("Helytelen email cím");
+                    return;
+                } else if (password.length() < 8) {
+                    editTextPassword.setError("Adjon meg egy erősebb jelszót");
+                    return;
+                }
+
+                // User objektum létrehozása
+
+                User user = new User(name, email, password);
                 Gson converter = new Gson();
                 RequestTask task = new RequestTask(requestUrl, "POST", converter.toJson(user));
                 task.execute();
+
+
             }
         });
 
@@ -67,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void init() {
         buttonRegister = findViewById(R.id.buttonRegister);
         buttonBack = findViewById(R.id.buttonBack);
-        editTextFullName = findViewById(R.id.editTextFullName);
+        editTextName = findViewById(R.id.editTextName);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
     }
@@ -115,10 +137,10 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("onPostExecuteError:", response.getContent());
             }
             if (requestType.equals("POST")) {
-                if (response.getResponseCode() == 200) {
+                if (response.getResponseCode() == 201) {
                     Toast.makeText(RegisterActivity.this,
                             "Sikeres regisztráció", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
                 }

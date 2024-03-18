@@ -1,25 +1,24 @@
 package com.example.mobilapp;
 
 public class User {
-    private String fullName;
+    private String name;
     private String email;
     private String password;
     //plusz egyéb adattagok ha szükséges
 
-    //következő lépés a konstuktorok, getterek és setterek létrehozása
 
-    public User(String fullName, String email, String password) {
-        this.fullName = fullName;
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
         this.password = password;
     }
 
     public String getFullName() {
-        return fullName;
+        return name;
     }
 
     public void setFullName(String fullName) {
-        this.fullName = fullName;
+        this.name = fullName;
     }
 
     public String getEmail() {

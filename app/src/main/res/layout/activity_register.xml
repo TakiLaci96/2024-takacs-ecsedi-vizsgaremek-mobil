@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     tools:context=".RegisterActivity">
 
     <LinearLayout
@@ -38,7 +39,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTextFullName"
+                    android:id="@+id/editTextName"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
