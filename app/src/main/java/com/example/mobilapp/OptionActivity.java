@@ -28,6 +28,16 @@ public class OptionActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Saját hibák listázása gombra kattintás
+        buttonListMyErrors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionActivity.this, MyErrorsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void init() {
