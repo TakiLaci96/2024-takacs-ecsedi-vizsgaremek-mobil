@@ -24,18 +24,19 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class MyErrorsActivity extends AppCompatActivity {
+public class AllErrorActivity extends AppCompatActivity {
 
     private ListView listViewErrors;
     private List<Error> errors = new ArrayList<>();
+
     private TextView textViewErrorTitle;
     private TextView textViewErrorDescription;
     private TextView textViewErrorLocation;
     private TextView textViewErrorStatus;
     private ImageView imageViewError;
+
     private Button buttonBack;
     private String url = "http://10.0.2.2:8000/api/indexAll";
 
@@ -48,7 +49,7 @@ public class MyErrorsActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
-        setContentView(R.layout.activity_my_errors);
+        setContentView(R.layout.activity_all_error);
         init();
 
         RequestTask task = new RequestTask(url, "GET");
@@ -58,7 +59,7 @@ public class MyErrorsActivity extends AppCompatActivity {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyErrorsActivity.this, OptionActivity.class);
+                Intent intent = new Intent(AllErrorActivity.this, OptionActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -77,9 +78,22 @@ public class MyErrorsActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
     }
 
+    // Error response class létrehozása a hibák listázásához
+    public class ErrorResponse {
+        private List<Error> errors;
+
+        public List<Error> getErrors() {
+            return errors;
+        }
+
+        public void setErrors(List<Error> errors) {
+            this.errors = errors;
+        }
+    }
+
     private class ErrorAdapter extends ArrayAdapter<Error> {
         public ErrorAdapter() {
-            super(MyErrorsActivity.this, R.layout.activity_my_errors, errors);
+            super(AllErrorActivity.this, R.layout.activity_all_error, errors);
         }
 
         // getView metódus létrehozása a listaelemek megjelenítéséhez
@@ -138,7 +152,7 @@ public class MyErrorsActivity extends AppCompatActivity {
                     response = RequestHandler.delete(requestUrl + "/" + requestParams);
                 }
             } catch (IOException e) {
-                Toast.makeText(MyErrorsActivity.this,
+                Toast.makeText(AllErrorActivity.this,
                         e.toString(), Toast.LENGTH_SHORT).show();
             }
             return response;
@@ -158,10 +172,27 @@ public class MyErrorsActivity extends AppCompatActivity {
             //progressBar.setVisibility(View.GONE);
             Gson converter = new Gson();
             if (response.getResponseCode() >= 400) {
-                Toast.makeText(MyErrorsActivity.this,
-                        "Hiba történt a kérés feldolgozása során", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AllErrorActivity.this,
+                        "Hiba történt a kérés feldolgozása során" + response.getResponseCode(), Toast.LENGTH_SHORT).show();
                 Log.d("onPostExecuteError:", response.getContent());
+            } else {
+                try {
+                    ErrorResponse errorResponse = converter.fromJson(response.getContent(), ErrorResponse.class);
+                    errors.clear();
+                    if (errorResponse != null && errorResponse.getErrors() != null) {
+                        errors.addAll(errorResponse.getErrors());
+                        ((ErrorAdapter) listViewErrors.getAdapter()).notifyDataSetChanged();
+                        Toast.makeText(AllErrorActivity.this,
+                                "Sikeres adatlekérdezés", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(AllErrorActivity.this,
+                            "Hiba történt a válasz feldolgozása során", Toast.LENGTH_SHORT).show();
+                    Log.d("onPostExecuteError:", e.toString());
+                }
             }
+
+            /*
             if (requestType.equals("GET")) {
                 Error[] errorsArray = converter.fromJson(
                         response.getContent(), Error[].class);
@@ -177,6 +208,8 @@ public class MyErrorsActivity extends AppCompatActivity {
                 errors.removeIf(error -> error.getId() == id);
                 Toast.makeText(MyErrorsActivity.this, "Sikeres törlés", Toast.LENGTH_SHORT).show();
             }
+
+             */
         }
     }
 }
