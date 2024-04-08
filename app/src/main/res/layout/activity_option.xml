@@ -65,7 +65,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:text="Valamilyen funkció"
+                android:text="Kapcsolat"
                 android:textAllCaps="false"
                 android:id="@+id/buttonContacts" />
 
@@ -80,6 +80,6 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_fileName="errorAnimation.json"
-        android:layout_below="@id/linearLayout"/>
+        android:layout_below="@id/linearLayout" />
 
 </RelativeLayout>

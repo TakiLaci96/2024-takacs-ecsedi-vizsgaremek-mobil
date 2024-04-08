@@ -12,6 +12,7 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
     // Bejelentkezéshez szükséges adatok
     public User(String email, String password) {
         this.email = email;
