@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 public class NewErrorActivity extends AppCompatActivity {
@@ -32,14 +35,18 @@ public class NewErrorActivity extends AppCompatActivity {
     private Button buttonErrorSubmit;
     private Button buttonErrorCancel;
 
-    /*
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
 
-    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Fullscreen mode
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+
         setContentView(R.layout.activity_new_error);
         init();
 
@@ -49,7 +56,7 @@ public class NewErrorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, 1);
+                startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
             }
         });
 
@@ -103,10 +110,7 @@ public class NewErrorActivity extends AppCompatActivity {
         });
     }
 
-    private void takeaPhoto() {
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture, 1);
-    }
+
 
     public void init() {
         progressBar = findViewById(R.id.progressBar);
@@ -120,62 +124,39 @@ public class NewErrorActivity extends AppCompatActivity {
         buttonErrorCancel = findViewById(R.id.buttonErrorCancel);
     }
 
+    private void takeaPhoto() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
+    }
 
-    // Kép megjelenítése
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Ha a kamera visszatért
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            // A kép adatainak lekérése
-            Bundle extras = data.getExtras();
-            // A kép megjelenítése
-            Bitmap firstBitmap = (Bitmap) extras.get("data");
-            String base64Bitmap = convertImageToBase64(firstBitmap);
-            imageViewErrorPicture.setImageBitmap(firstBitmap);
-            Bitmap secondBitmap = convertBase64ToImage(base64Bitmap);
-            imageViewErrorPicture.setImageBitmap(secondBitmap);
+
+        if (resultCode == RESULT_OK) {
+            Bitmap imageBitmap = null;
+
+            if (requestCode == REQUEST_IMAGE_CAPTURE && data != null && data.getExtras() != null) {
+                Bundle extras = data.getExtras();
+                imageBitmap = (Bitmap) extras.get("data");
+            } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+                Uri selectedImageUri = data.getData();
+                try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Hiba történt a kép betöltésekor", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            if (imageBitmap != null) {
+                imageViewErrorPicture.setImageBitmap(imageBitmap);
+            }
         }
     }
 
-    // Kép átalakítása base64-be
-    private String convertImageToBase64(Bitmap bitmap) {
-        // A kép átalakítása byte tömbbé, majd base64-be
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        // A kép tömörítése
-        // A tömörítési minőség 100%
-        // A tömörítési formátum JPEG
-        // A tömörített kép byte tömbbe való átalakítása
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        // A byte tömb átalakítása base64-be
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-        // A base64 string visszaadása
-        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-    }
-
-    // Kép átalakítása base64-ből
-    private Bitmap convertBase64ToImage(String base64String) {
-        // A base64 string átalakítása byte tömbbé
-        byte[] imageBytes = Base64.decode(base64String, Base64.DEFAULT);
-        // A byte tömb átalakítása képpé
-        // A kép visszaadása
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-    }
 
 
-/*
-    // Kép kiválasztásának eredménye
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Uri selectedImage = imageReturnedIntent.getData();
-            imageViewErrorPicture.setImageURI(selectedImage);
-        }
-    }
-
- */
 
 
-    //TODO: Kép feltöltése
-    //TODO: Hiba felvétele a szerverre
 }

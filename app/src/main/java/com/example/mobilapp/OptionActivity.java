@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class OptionActivity extends AppCompatActivity {
 
     private Button buttonNewError;
-    private Button buttonListMyErrors;
+    private Button buttonListAllError;
     private Button buttonListFixedErrors;
     private Button buttonContacts;
 
@@ -38,11 +38,31 @@ public class OptionActivity extends AppCompatActivity {
             }
         });
 
-        // Saját hibák listázása gombra kattintás
-        buttonListMyErrors.setOnClickListener(new View.OnClickListener() {
+        // Összes hiba megtekintése gombra kattintás
+        buttonListAllError.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OptionActivity.this, MyErrorsActivity.class);
+                Intent intent = new Intent(OptionActivity.this, AllErrorActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // Javított hibák megtekintése gombra kattintás
+        buttonListFixedErrors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionActivity.this, FixedErrorsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // Kapcsolatok gombra kattintás
+        buttonContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionActivity.this, Contacts.class);
                 startActivity(intent);
                 finish();
             }
@@ -51,7 +71,7 @@ public class OptionActivity extends AppCompatActivity {
 
     private void init() {
         buttonNewError = findViewById(R.id.buttonNewError);
-        buttonListMyErrors = findViewById(R.id.buttonListMyErrors);
+        buttonListAllError = findViewById(R.id.buttonListAllError);
         buttonListFixedErrors = findViewById(R.id.buttonListFixedErrors);
         buttonContacts = findViewById(R.id.buttonContacts);
     }
