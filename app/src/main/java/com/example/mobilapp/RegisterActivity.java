@@ -137,7 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(Response response) {
             super.onPostExecute(response);
             Gson converter = new Gson();
-            Toast.makeText(RegisterActivity.this, "" + response.getResponseCode(), Toast.LENGTH_SHORT).show();
             if (response.getResponseCode() >= 400) {
                 Toast.makeText(RegisterActivity.this,
                         "Hiba történt a kérés feldolgozása során", Toast.LENGTH_SHORT).show();
