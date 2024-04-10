@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +38,8 @@ public class NewErrorActivity extends AppCompatActivity {
     private Button buttonErrorPictureCamera;
     private Button buttonErrorSubmit;
     private Button buttonErrorCancel;
-
+    private String base64Bitmap;
+    private String requestUrl = "http://10.0.2.2:8000/api/store";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
 
@@ -78,6 +83,7 @@ public class NewErrorActivity extends AppCompatActivity {
                 String errorDescription = editTextErrorDescription.getText().toString();
                 String errorLocation = editTextErrorLocation.getText().toString();
 
+
                 if (errorTitle.isEmpty() || errorDescription.isEmpty() || errorLocation.isEmpty()) {
                     Toast.makeText(NewErrorActivity.this,
                             "Minden mező kitöltése kötelező", Toast.LENGTH_SHORT).show();
@@ -96,7 +102,11 @@ public class NewErrorActivity extends AppCompatActivity {
                     return;
                 }
 
-                // TODO: Hiba felvétele a szerverre
+                // Hiba felvétel
+                NewError error = new NewError(errorTitle, errorDescription, errorLocation, base64Bitmap);
+                RequestTask task = new RequestTask(requestUrl, "POST", new Gson().toJson(error));
+                task.execute();
+
             }
         });
 
@@ -109,9 +119,6 @@ public class NewErrorActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
     public void init() {
         progressBar = findViewById(R.id.progressBar);
         editTextErrorTitle = findViewById(R.id.editTextErrorTitle);
@@ -123,6 +130,61 @@ public class NewErrorActivity extends AppCompatActivity {
         buttonErrorSubmit = findViewById(R.id.buttonErrorSubmit);
         buttonErrorCancel = findViewById(R.id.buttonErrorCancel);
     }
+
+
+    private class RequestTask extends AsyncTask<Void, Void, Response> {
+        String requestUrl;
+        String requestType;
+        String requestParams;
+
+        public RequestTask(String requestUrl, String requestType) {
+            this.requestUrl = requestUrl;
+            this.requestType = requestType;
+        }
+
+        public RequestTask(String requestUrl, String requestType, String requestParams) {
+            this.requestUrl = requestUrl;
+            this.requestType = requestType;
+            this.requestParams = requestParams;
+        }
+
+        //doInBackground metódus létrehozása a kérés elküldéséhez
+        @Override
+        protected Response doInBackground(Void... voids) {
+            Response response = null;
+            try {
+                if (requestType.equals("POST")) {
+                    response = RequestHandler.post(requestUrl, requestParams);
+                }
+            } catch (IOException e) {
+                Toast.makeText(NewErrorActivity.this,
+                        e.toString(), Toast.LENGTH_SHORT).show();
+            }
+            return response;
+        }
+
+        //onPostExecute metódus létrehozása a válasz feldolgozásához
+        @Override
+        protected void onPostExecute(Response response) {
+            super.onPostExecute(response);
+            Gson converter = new Gson();
+            if (response.getResponseCode() >= 400) {
+                Toast.makeText(NewErrorActivity.this,
+                        "Hiba történt a kérés feldolgozása során", Toast.LENGTH_SHORT).show();
+                Log.d("onPostExecuteError:", response.getContent());
+            }
+            if (requestType.equals("POST")) {
+                if (response.getResponseCode() == 201) {
+                    Toast.makeText(NewErrorActivity.this,
+                            "Sikeres hiba felvétel", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(NewErrorActivity.this, OptionActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        }
+    }
+
 
     private void takeaPhoto() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -151,12 +213,23 @@ public class NewErrorActivity extends AppCompatActivity {
 
             if (imageBitmap != null) {
                 imageViewErrorPicture.setImageBitmap(imageBitmap);
+                base64Bitmap = convertImageToBase64(imageBitmap);
             }
         }
     }
 
-
-
-
-
+    private String convertImageToBase64(Bitmap bitmap) {
+        // A kép átalakítása base64-be
+        // A kép átalakítása byte tömbbé, majd base64-be
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        // A kép tömörítése
+        // A tömörítési minőség 100%
+        // A tömörítési formátum JPEG
+        // A tömörített kép byte tömbbe való átalakítása
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        // A byte tömb átalakítása base64-be
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        // A base64 string visszaadása
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
 }
