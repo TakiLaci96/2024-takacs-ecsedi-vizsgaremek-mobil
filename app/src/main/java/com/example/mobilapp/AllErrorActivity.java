@@ -1,8 +1,11 @@
 package com.example.mobilapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,19 +27,13 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AllErrorActivity extends AppCompatActivity {
 
     private ListView listViewErrors;
     private List<Error> errors = new ArrayList<>();
-
-    private TextView textViewErrorTitle;
-    private TextView textViewErrorDescription;
-    private TextView textViewErrorLocation;
-    private TextView textViewErrorStatus;
-    private ImageView imageViewError;
-
     private Button buttonBack;
     private String url = "http://10.0.2.2:8000/api/indexAll";
 
@@ -68,32 +65,14 @@ public class AllErrorActivity extends AppCompatActivity {
     }
 
     private void init() {
-        textViewErrorTitle = findViewById(R.id.textViewErrorTitle);
-        textViewErrorDescription = findViewById(R.id.textViewErrorDescription);
-        textViewErrorLocation = findViewById(R.id.textViewErrorLocation);
-        textViewErrorStatus = findViewById(R.id.textViewErrorStatus);
-        imageViewError = findViewById(R.id.imageViewError);
         listViewErrors = findViewById(R.id.listViewErrors);
         listViewErrors.setAdapter(new ErrorAdapter());
         buttonBack = findViewById(R.id.buttonBack);
     }
 
-    // Error response class létrehozása a hibák listázásához
-    public class ErrorResponse {
-        private List<Error> errors;
-
-        public List<Error> getErrors() {
-            return errors;
-        }
-
-        public void setErrors(List<Error> errors) {
-            this.errors = errors;
-        }
-    }
-
     private class ErrorAdapter extends ArrayAdapter<Error> {
         public ErrorAdapter() {
-            super(AllErrorActivity.this, R.layout.activity_all_error, errors);
+            super(AllErrorActivity.this, R.layout.errors_list_items, errors);
         }
 
         // getView metódus létrehozása a listaelemek megjelenítéséhez
@@ -109,8 +88,7 @@ public class AllErrorActivity extends AppCompatActivity {
             TextView textViewErrorDescription = view.findViewById(R.id.textViewErrorDescription);
             TextView textViewErrorLocation = view.findViewById(R.id.textViewErrorLocation);
             TextView textViewErrorStatus = view.findViewById(R.id.textViewErrorStatus);
-            // Még nem fog működni
-            // ImageView imageViewError = view.findViewById(R.id.imageViewError);
+            ImageView imageViewError = view.findViewById(R.id.imageViewError);
             //aktuális hiba létrehozása az errors listából
             Error error = errors.get(position);
             //adatok beállítása
@@ -118,10 +96,19 @@ public class AllErrorActivity extends AppCompatActivity {
             textViewErrorDescription.setText(error.getHibaLeirasa());
             textViewErrorLocation.setText(error.getHibaHelye());
             textViewErrorStatus.setText(error.getHibaAllapota());
-            // ez még nem fog működni
-            //imageViewError.setImageAlpha(error.getHibaKepe());
+            Bitmap bitmap = convertBase64ToImage(error.getHibaKepe());
+            imageViewError.setImageBitmap(bitmap);
             return view;
         }
+    }
+
+    private Bitmap convertBase64ToImage(String base64String) {
+        // A base64 string átalakítása képpé
+        // A base64 string átalakítása byte tömbbé
+        byte[] imageBytes = Base64.decode(base64String, Base64.DEFAULT);
+        // A byte tömb átalakítása képpé
+        // A kép visszaadása
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 
     private class RequestTask extends AsyncTask<Void, Void, Response> {
@@ -176,40 +163,13 @@ public class AllErrorActivity extends AppCompatActivity {
                         "Hiba történt a kérés feldolgozása során" + response.getResponseCode(), Toast.LENGTH_SHORT).show();
                 Log.d("onPostExecuteError:", response.getContent());
             } else {
-                try {
-                    ErrorResponse errorResponse = converter.fromJson(response.getContent(), ErrorResponse.class);
-                    errors.clear();
-                    if (errorResponse != null && errorResponse.getErrors() != null) {
-                        errors.addAll(errorResponse.getErrors());
-                        ((ErrorAdapter) listViewErrors.getAdapter()).notifyDataSetChanged();
-                        Toast.makeText(AllErrorActivity.this,
-                                "Sikeres adatlekérdezés", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(AllErrorActivity.this,
-                            "Hiba történt a válasz feldolgozása során", Toast.LENGTH_SHORT).show();
-                    Log.d("onPostExecuteError:", e.toString());
-                }
-            }
-
-            /*
-            if (requestType.equals("GET")) {
-                Error[] errorsArray = converter.fromJson(
-                        response.getContent(), Error[].class);
+                Error[] errorArray = converter.fromJson(response.getContent(), Error[].class);
                 errors.clear();
-                errors.addAll(Arrays.asList(errorsArray));
+                errors.addAll(Arrays.asList(errorArray));
                 listViewErrors.invalidateViews();
-                Toast.makeText(MyErrorsActivity.this,
+                Toast.makeText(AllErrorActivity.this,
                         "Sikeres adatlekérdezés", Toast.LENGTH_SHORT).show();
             }
-            if (requestType.equals("DELETE")) {
-                int id = Integer.parseInt(requestParams);
-                //errors lista frissítése a törölt elem nélkül
-                errors.removeIf(error -> error.getId() == id);
-                Toast.makeText(MyErrorsActivity.this, "Sikeres törlés", Toast.LENGTH_SHORT).show();
-            }
-
-             */
         }
     }
 }
