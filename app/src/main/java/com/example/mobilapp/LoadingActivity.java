@@ -8,6 +8,9 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * A betöltő Activity a splash screen megjelenítéséhez
+ */
 public class LoadingActivity extends AppCompatActivity {
 
     private static int SPLASH_TIME_OUT = 5000;
@@ -23,9 +26,10 @@ public class LoadingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_loading);
 
-        // Handler for splash screen
-        // The splash screen will be displayed for 5 seconds
-        // After 5 seconds, the main activity will be started
+        /**
+         * A splash screen megjelenítése 5 másodpercig (5000 ms)
+         * Majd átirányítás a MainActivity-re
+         */
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
