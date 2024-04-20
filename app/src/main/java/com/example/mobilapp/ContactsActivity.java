@@ -9,8 +9,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-
-public class Contacts extends AppCompatActivity {
+/**
+ * Az alkalmazásban elérhető kapcsolatokat megjelenítő Activity
+ */
+public class ContactsActivity extends AppCompatActivity {
 
     private Button buttonBack;
     @Override
@@ -29,7 +31,7 @@ public class Contacts extends AppCompatActivity {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Contacts.this, OptionActivity.class);
+                Intent intent = new Intent(ContactsActivity.this, OptionActivity.class);
                 startActivity(intent);
                 finish();
             }
