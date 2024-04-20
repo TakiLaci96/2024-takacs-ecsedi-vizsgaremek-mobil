@@ -1,6 +1,7 @@
 package com.example.mobilapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +18,17 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
+/**
+ * A bejelentkezésért felelős Activity a mobil alkalmazásban
+
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private Button buttonLogin;
     private Button buttonBack;
     private TextInputLayout editTextEmail;
     private TextInputLayout editTextPassword;
+    // Az API végpontja, ahol a bejelentkezési adatokat elküldjük
     private String requestUrl = "http://10.0.2.2:8000/api/login";
 
 
@@ -45,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = editTextEmail.getEditText().getText().toString().trim();
                 String password = editTextPassword.getEditText().getText().toString().trim();
 
+                // Ellenőrizze, hogy a mezők üresek-e
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(LoginActivity.this,
                             "Minden mező kitöltése kötelező", Toast.LENGTH_SHORT).show();
@@ -53,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
+                // A bejelentkezési adatok elküldése a RequestTask segítségével a megadott URL címre
                 User user = new User(email, password);
                 Gson converter = new Gson();
                 RequestTask task = new RequestTask(requestUrl, "POST", converter.toJson(user));
@@ -78,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
     }
 
-
+    // RequestTask osztály létrehozása a kérés elküldéséhez és a válasz feldolgozásához
     private class RequestTask extends AsyncTask<Void, Void, Response> {
         String requestUrl;
         String requestType;
@@ -101,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             Response response = null;
             try {
                 if (requestType.equals("POST")) {
-                    response = RequestHandler.post(requestUrl, requestParams);
+                    response = RequestHandler.post(requestUrl, requestParams, null);
                 }
             } catch (IOException e) {
                 Toast.makeText(LoginActivity.this,
@@ -126,6 +134,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.getResponseCode() == 200) {
                     Toast.makeText(LoginActivity.this,
                             "Sikeres bejelentkezés!", Toast.LENGTH_SHORT).show();
+                    // A válasz tartalmának feldolgozása és a token mentése a SharedPreferences-be
+                    TokenHelper tokenHelper = converter.fromJson(response.getContent(), TokenHelper.class);
+                    SharedPreferences preferences = getSharedPreferences("datas", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("token", tokenHelper.getToken());
+                    editor.apply();
+                    // Átirányítás az OptionActivity-re
                     Intent intent = new Intent(LoginActivity.this, OptionActivity.class);
                     startActivity(intent);
                     finish();
