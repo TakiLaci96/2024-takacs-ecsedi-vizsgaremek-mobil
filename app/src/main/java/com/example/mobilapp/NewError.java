@@ -1,5 +1,8 @@
 package com.example.mobilapp;
 
+/**
+ * Az új hibát reprezentáló osztály
+ */
 public class NewError {
 
     private int id;
@@ -8,7 +11,7 @@ public class NewError {
     private String hibaHelye;
     private String hibaKepe;
 
-
+    // Konstruktorok
     public NewError(String hibaMegnevezese, String hibaLeirasa, String hibaHelye, String hibaKepe) {
         this.hibaMegnevezese = hibaMegnevezese;
         this.hibaLeirasa = hibaLeirasa;
