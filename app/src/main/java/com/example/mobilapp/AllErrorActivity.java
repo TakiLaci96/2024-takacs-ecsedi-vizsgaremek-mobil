@@ -1,6 +1,7 @@
 package com.example.mobilapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 
@@ -30,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Az összes hibát megjelenítő Activity
+ */
 public class AllErrorActivity extends AppCompatActivity {
 
     private ListView listViewErrors;
@@ -42,6 +47,9 @@ public class AllErrorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Fullscreen mode
+        /**
+         * Az activity teljes képernyős módban való futtatásához
+         */
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
@@ -49,6 +57,7 @@ public class AllErrorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_all_error);
         init();
 
+        // Hibaadatok lekérdezése
         RequestTask task = new RequestTask(url, "GET");
         task.execute();
 
@@ -64,44 +73,72 @@ public class AllErrorActivity extends AppCompatActivity {
 
     }
 
+    // Inicializálás metódus
     private void init() {
         listViewErrors = findViewById(R.id.listViewErrors);
         listViewErrors.setAdapter(new ErrorAdapter());
         buttonBack = findViewById(R.id.buttonBack);
     }
 
+    /**
+     * Az ErrorAdapter osztály a hibák listájának megjelenítésére szolgáló adapter
+     */
     private class ErrorAdapter extends ArrayAdapter<Error> {
         public ErrorAdapter() {
             super(AllErrorActivity.this, R.layout.errors_list_items, errors);
         }
 
-        // getView metódus létrehozása a listaelemek megjelenítéséhez
+        /**
+         * A getView metódus a listaelemek megjelenítésére szolgál
+         */
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             //inflater létrehozása
             LayoutInflater inflater = getLayoutInflater();
             //view létrehozása az activity_my_errors.xml-ből
-            View view = inflater.inflate(R.layout.errors_list_items, null, false);
+            View view = inflater.inflate(R.layout.errors_list_items, parent, false);
             //activity_my_errors.xml-ben lévő elemek inicializálása
             TextView textViewErrorTitle = view.findViewById(R.id.textViewErrorTitle);
             TextView textViewErrorDescription = view.findViewById(R.id.textViewErrorDescription);
             TextView textViewErrorLocation = view.findViewById(R.id.textViewErrorLocation);
             TextView textViewErrorStatus = view.findViewById(R.id.textViewErrorStatus);
             ImageView imageViewError = view.findViewById(R.id.imageViewError);
+            //CardView inicializálása
+            androidx.cardview.widget.CardView cardView = view.findViewById(R.id.cardViewError);
             //aktuális hiba létrehozása az errors listából
             Error error = errors.get(position);
-            //adatok beállítása
+            //adatok beállítása az aktuális hiba alapján
             textViewErrorTitle.setText(error.getHibaMegnevezese());
             textViewErrorDescription.setText(error.getHibaLeirasa());
             textViewErrorLocation.setText(error.getHibaHelye());
             textViewErrorStatus.setText(error.getHibaAllapota());
             Bitmap bitmap = convertBase64ToImage(error.getHibaKepe());
             imageViewError.setImageBitmap(bitmap);
+
+            // Háttérszín beállítása az állapot szerint
+            switch (error.getHibaAllapota()) {
+                case "bejelentés alatt":
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.status_bejelentes_alatt));
+                    break;
+                case "folyamatban":
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.status_feldolgozas_alatt));
+                    break;
+                case "kész":
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(getContext(), R.color.status_kesz));
+                    break;
+                default:
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+                    break;
+            }
+
             return view;
         }
     }
 
+    /**
+     * A convertBase64ToImage metódus a base64 stringet képpé alakítja
+     */
     private Bitmap convertBase64ToImage(String base64String) {
         // A base64 string átalakítása képpé
         // A base64 string átalakítása byte tömbbé
@@ -111,6 +148,9 @@ public class AllErrorActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
 
+    /**
+     * A RequestTask osztály a hibák lekérdezésére szolgáló aszinkron művelet
+     */
     private class RequestTask extends AsyncTask<Void, Void, Response> {
         String requestUrl;
         String requestType;
@@ -127,16 +167,17 @@ public class AllErrorActivity extends AppCompatActivity {
             this.requestParams = requestParams;
         }
 
-        //doInBackground metódus létrehozása a kérés elküldéséhez
+        /**
+         * Az doInBackground metódus a hálózati kérés elküldésére szolgál
+         */
         @Override
         protected Response doInBackground(Void... voids) {
             Response response = null;
+            SharedPreferences preferences = getSharedPreferences("datas", MODE_PRIVATE);
+            String token = preferences.getString("token", null);
             try {
                 if (requestType.equals("GET")) {
-                    response = RequestHandler.get(requestUrl);
-                }
-                if (requestType.equals("DELETE")) {
-                    response = RequestHandler.delete(requestUrl + "/" + requestParams);
+                    response = RequestHandler.get(requestUrl, token);
                 }
             } catch (IOException e) {
                 Toast.makeText(AllErrorActivity.this,
@@ -152,7 +193,9 @@ public class AllErrorActivity extends AppCompatActivity {
 
         }
 
-        //onPostExecute metódus létrehozása a válasz feldolgozásához
+        /**
+         * Az onPostExecute metódus a válasz feldolgozására és megjelenítésére szolgál
+         */
         @Override
         protected void onPostExecute(Response response) {
             super.onPostExecute(response);
@@ -166,7 +209,7 @@ public class AllErrorActivity extends AppCompatActivity {
                 Error[] errorArray = converter.fromJson(response.getContent(), Error[].class);
                 errors.clear();
                 errors.addAll(Arrays.asList(errorArray));
-                listViewErrors.invalidateViews();
+                ((ErrorAdapter) listViewErrors.getAdapter()).notifyDataSetChanged();
                 Toast.makeText(AllErrorActivity.this,
                         "Sikeres adatlekérdezés", Toast.LENGTH_SHORT).show();
             }
