@@ -10,6 +10,7 @@
 
     <!-- CardView -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,47 +21,66 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:padding="16dp">
 
-            <!-- Címsor -->
-            <TextView
-                android:id="@+id/textViewErrorTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Cím"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <!-- Leírás -->
-            <TextView
-                android:id="@+id/textViewErrorDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Leírás" />
+                <!-- Címsor -->
+                <TextView
+                    android:id="@+id/textViewErrorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cím"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-            <!-- Hely -->
-            <TextView
-                android:id="@+id/textViewErrorLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hely" />
+                <!-- Leírás -->
+                <TextView
+                    android:id="@+id/textViewErrorDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Leírás" />
 
-            <!-- Státusz -->
-            <TextView
-                android:id="@+id/textViewErrorStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Státusz" />
+                <!-- Hely -->
+                <TextView
+                    android:id="@+id/textViewErrorLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Hely" />
 
-            <!-- Kép -->
-            <ImageView
-                android:id="@+id/imageViewError"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                android:src="@drawable/error" />
+                <!-- Státusz -->
+                <TextView
+                    android:id="@+id/textViewErrorStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Státusz" />
+
+            </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:gravity="center">
+
+               <!-- Kép -->
+               <ImageView
+                   android:id="@+id/imageViewError"
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:layout_gravity="center_horizontal"
+                   android:scaleType="centerCrop"
+                   android:src="@drawable/error" />
+
+           </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
