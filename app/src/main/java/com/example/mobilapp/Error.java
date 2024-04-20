@@ -1,7 +1,9 @@
 package com.example.mobilapp;
 
 import java.util.Date;
-
+/**
+ * Az Error osztály, amely a hibákat reprezentálja
+ */
 public class Error {
 
     private int id;
@@ -10,7 +12,7 @@ public class Error {
     private String hibaHelye;
     private String hibaKepe;
     private Date bejelntesIdeje;
-    private String hibaAllapota; // 1: bejelentve, 2: folyamatban, 3: kész Ez szükséges?
+    private String hibaAllapota;
 
     public Error(int id, String hibaMegnevezese, String hibaLeirasa, String hibaHelye, String hibaKepe, Date bejelntesIdeje, String hibaAllapota) {
         this.id = id;
