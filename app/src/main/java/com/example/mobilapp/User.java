@@ -1,5 +1,6 @@
 package com.example.mobilapp;
 
+/** A felhasználó adatait tároló osztály */
 public class User {
     private String name;
     private String email;

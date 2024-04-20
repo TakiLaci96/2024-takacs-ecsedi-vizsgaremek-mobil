@@ -17,6 +17,9 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
+/**
+ * A regisztrációért felelős Activity a mobil alkalmazásban
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private Button buttonRegister;
@@ -39,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         init();
 
+        // Regisztráció gomb kattintás és ellenőrzések
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
     }
 
+    // RequestTask osztály létrehozása a kérés elküldéséhez és a válasz feldolgozásához
     private class RequestTask extends AsyncTask<Void, Void, Response> {
         String requestUrl;
         String requestType;
@@ -117,13 +122,13 @@ public class RegisterActivity extends AppCompatActivity {
             this.requestParams = requestParams;
         }
 
-        //doInBackground metódus létrehozása a kérés elküldéséhez
+        //doInBackground metódus létrehozása a kérés elküldéséhez a háttérben
         @Override
         protected Response doInBackground(Void... voids) {
             Response response = null;
             try {
                 if (requestType.equals("POST")) {
-                    response = RequestHandler.post(requestUrl, requestParams);
+                    response = RequestHandler.post(requestUrl, requestParams, null);
                 }
             } catch (IOException e) {
                 Toast.makeText(RegisterActivity.this,

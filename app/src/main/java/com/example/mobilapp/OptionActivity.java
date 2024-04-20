@@ -9,6 +9,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Az alkalmazásban elérhető opciókat megjelenítő Activity
+ */
 public class OptionActivity extends AppCompatActivity {
 
     private Button buttonNewError;
@@ -62,7 +65,7 @@ public class OptionActivity extends AppCompatActivity {
         buttonContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OptionActivity.this, Contacts.class);
+                Intent intent = new Intent(OptionActivity.this, ContactsActivity.class);
                 startActivity(intent);
                 finish();
             }

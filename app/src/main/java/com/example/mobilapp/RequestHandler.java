@@ -1,5 +1,9 @@
 package com.example.mobilapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,28 +15,43 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A RequestHandler osztály felelős a backend és a frontend közötti kommunikáció megvalósításáért
+ */
 public class RequestHandler {
 
     private RequestHandler() {
     }
 
-
-    //backend és a frontend közötti kommunikáció megvalósítása
-    private static HttpURLConnection setupConnection(String url) throws IOException {
-        //urlObj létrehozása
+    // setupConnection metódus létrehozása a connection beállításához
+    /**
+     * A kapcsolat beállítása
+     * @param url a kapcsolódni kívánt URL
+     * @param token a kapcsolódáshoz szükséges token
+     * @return a kapcsolat
+     * @throws IOException ha hiba történik a kapcsolat beállítása során
+     */
+    private static HttpURLConnection setupConnection(String url, String token) throws IOException {
         URL urlObj = new URL(url);
-        //connection létrehozása
-        HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-        //connection beállítása
-        connection.setRequestProperty("Accept", "application/json");
-        //connection timeout beállítása
-        connection.setConnectTimeout(10000);
-        //read timeout beállítása
-        connection.setReadTimeout(10000);
-        return connection;
+        HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(10000);
+        conn.setReadTimeout(10000);
+        Log.d("Token", "setupConnection: " + token);
+        if (token != null) {
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+        }
+        return conn;
     }
 
+
     //getResponse metódus létrehozása a responseCode és a content lekérdezéséhez
+    /**
+     * A válasz lekérdezése
+     * @param connection a kapcsolat
+     * @return a válasz
+     * @throws IOException ha hiba történik a válasz lekérdezése során
+     */
     private static Response getResponse(HttpURLConnection connection) throws IOException {
         //responseCode lekérdezése
         int responseCode = connection.getResponseCode();
@@ -79,9 +98,9 @@ public class RequestHandler {
     }
 
     //get metódus létrehozása a GET kéréshez
-    public static Response get(String url) throws IOException {
+    public static Response get(String url, String token) throws IOException {
         //connection létrehozása
-        HttpURLConnection connection = setupConnection(url);
+        HttpURLConnection connection = setupConnection(url, token);
         //connection típusának beállítása
         connection.setRequestMethod("GET");
         //response visszaadása
@@ -89,35 +108,13 @@ public class RequestHandler {
     }
 
     //post metódus létrehozása a POST kéréshez
-    public static Response post(String url, String requestBody) throws IOException {
+    public static Response post(String url, String requestBody, String token) throws IOException {
         //connection létrehozása
-        HttpURLConnection connection = setupConnection(url);
+        HttpURLConnection connection = setupConnection(url, token);
         //connection típusának beállítása
         connection.setRequestMethod("POST");
         //requestBody hozzáadása
         addRequestBody(connection, requestBody);
-        //response visszaadása
-        return getResponse(connection);
-    }
-
-    //put metódus létrehozása a PUT kéréshez
-    public static Response put(String url, String requestBody) throws IOException {
-        //connection létrehozása
-        HttpURLConnection connection = setupConnection(url);
-        //connection típusának beállítása
-        connection.setRequestMethod("PUT");
-        //requestBody hozzáadása
-        addRequestBody(connection, requestBody);
-        //response visszaadása
-        return getResponse(connection);
-    }
-
-    //delete metódus létrehozása a DELETE kéréshez
-    public static Response delete(String url) throws IOException {
-        //connection létrehozása
-        HttpURLConnection connection = setupConnection(url);
-        //connection típusának beállítása
-        connection.setRequestMethod("DELETE");
         //response visszaadása
         return getResponse(connection);
     }
