@@ -8,7 +8,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+/**
+ * A fő Activity, ahol a felhasználó bejelentkezhet vagy regisztrálhat
+ */
 public class MainActivity extends AppCompatActivity {
 
     private Button buttonBejelentkezes;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
 
+        // Bejelentkezés gombra kattintás
         buttonBejelentkezes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Regisztráció gombra kattintás
         buttonRegisztracio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
