@@ -6,6 +6,6 @@
     <color name="status_feldolgozas_alatt">#4343F3</color> <!-- kék -->
     <color name="status_kesz">#00FF00</color> <!-- zöld -->
     <color name="status_elutasitva">#FF0000</color> <!-- piros -->
-    <color name="betuszin">#B5CAD7</color> 
+    <color name="betuszin">#B5CAD7</color>
     <color name="betuszin2">#FFFF00</color> <!-- fehér -->"
 </resources>
