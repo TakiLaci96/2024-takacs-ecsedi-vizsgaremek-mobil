@@ -1,6 +1,7 @@
 package com.example.mobilapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,7 +27,9 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
+/**
+ * Az új hibák felvételét megvalósító Activity
+ */
 public class NewErrorActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
@@ -39,6 +42,7 @@ public class NewErrorActivity extends AppCompatActivity {
     private Button buttonErrorSubmit;
     private Button buttonErrorCancel;
     private String base64Bitmap;
+    // Az API végpontja, ahol a hibát felvesszük
     private String requestUrl = "http://10.0.2.2:8000/api/store";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
@@ -102,7 +106,7 @@ public class NewErrorActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Hiba felvétel
+                // Hiba felvétel a RequestTask segítségével a megadott URL címre
                 NewError error = new NewError(errorTitle, errorDescription, errorLocation, base64Bitmap);
                 RequestTask task = new RequestTask(requestUrl, "POST", new Gson().toJson(error));
                 task.execute();
@@ -110,6 +114,7 @@ public class NewErrorActivity extends AppCompatActivity {
             }
         });
 
+        // Mégse gombra kattintás
         buttonErrorCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +136,7 @@ public class NewErrorActivity extends AppCompatActivity {
         buttonErrorCancel = findViewById(R.id.buttonErrorCancel);
     }
 
-
+    // RequestTask osztály létrehozása a kérés elküldéséhez és a válasz feldolgozásához
     private class RequestTask extends AsyncTask<Void, Void, Response> {
         String requestUrl;
         String requestType;
@@ -152,9 +157,11 @@ public class NewErrorActivity extends AppCompatActivity {
         @Override
         protected Response doInBackground(Void... voids) {
             Response response = null;
+            SharedPreferences preferences = getSharedPreferences("datas", MODE_PRIVATE);
+            String token = preferences.getString("token", null);
             try {
                 if (requestType.equals("POST")) {
-                    response = RequestHandler.post(requestUrl, requestParams);
+                    response = RequestHandler.post(requestUrl, requestParams, token);
                 }
             } catch (IOException e) {
                 Toast.makeText(NewErrorActivity.this,
@@ -185,12 +192,17 @@ public class NewErrorActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * A kép készítésére szolgáló metódus a kamera használatával
+     */
     private void takeaPhoto() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
     }
 
+    /**
+     * A kép kiválasztására szolgáló metódus a galéria használatával
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -210,7 +222,6 @@ public class NewErrorActivity extends AppCompatActivity {
                     Toast.makeText(this, "Hiba történt a kép betöltésekor", Toast.LENGTH_SHORT).show();
                 }
             }
-
             if (imageBitmap != null) {
                 imageViewErrorPicture.setImageBitmap(imageBitmap);
                 base64Bitmap = convertImageToBase64(imageBitmap);
@@ -218,6 +229,9 @@ public class NewErrorActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * A kép átalakítására szolgáló metódus base64-be
+     */
     private String convertImageToBase64(Bitmap bitmap) {
         // A kép átalakítása base64-be
         // A kép átalakítása byte tömbbé, majd base64-be
