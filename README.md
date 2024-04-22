@@ -17,8 +17,7 @@
 //Kiegészítésre vár
 
 ## A Felhasználói Dokumentáció:
-Itt érhető el: 
-https://github.com/TakiLaci96/2024-takacs-ecsedi-vizsgaremek-mobil/blob/main/Hiba%20bejelent%C5%91%20App%20manual.docx
+[Hiba bejelentő app manual.docx](https://github.com/TakiLaci96/2024-takacs-ecsedi-vizsgaremek-mobil/blob/main/Hiba%20bejelent%C5%91%20App%20manual.docx)
 
 ## Teszt esetek dokumentáció:
 Itt érhető el:
@@ -26,7 +25,7 @@ https://github.com/TakiLaci96/2024-takacs-ecsedi-vizsgaremek-mobil/blob/main/Mob
 
 
 ## Telepítés
-Az alkalmazás müködéséhez kelleni fog a backend része amit itt találsz:
+Az alkalmazás müködéséhez kelleni fog a backend része ami itt található:
 https://github.com/TakiLaci96/Ecsedi-Takacs-Backend
 
 Emelett egy android studio-ra lesz még szükség a futtatáshoz.
