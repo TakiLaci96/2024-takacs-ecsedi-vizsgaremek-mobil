@@ -140,7 +140,6 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("token", tokenHelper.getToken());
                     editor.apply();
-                    // Átirányítás az OptionActivity-re
                     Intent intent = new Intent(LoginActivity.this, OptionActivity.class);
                     startActivity(intent);
                     finish();
