@@ -30,3 +30,9 @@ https://github.com/TakiLaci96/Ecsedi-Takacs-Backend
 
 Emelett egy android studio-ra lesz még szükség a futtatáshoz.
 Tesztelt készülékek amin a UI jól müködik Pixel 2.
+
+## Készítette
+
+Ecsedi Tamás, Takács László
+
+Leadva: 2024. április 23.
